@@ -39,21 +39,34 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        conn = get_db()
-        user = conn.execute("SELECT * FROM users WHERE username=? AND password=?", 
-                            (username, password)).fetchone()
+
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM users WHERE username=? AND password=?", (username, password))
+        user = cursor.fetchone()
+        conn.close()
+
         if user:
-            session['user_id'] = user['id']
-            session['username'] = user['username']
-            session['email'] = user['email']
-            return redirect('/profile')
+            session['user_id'] = user[0]
+            session['username'] = user[1]
+            return redirect('/profile')  # ✅ This must be a valid route
+        else:
+            error = "Invalid username or password"
+            return render_template('login.html', error=error)
     return render_template('login.html')
 
 @app.route('/profile')
 def profile():
     if 'user_id' not in session:
         return redirect('/login')
-    return render_template('profile.html', username=session['username'], email=session['email'])
+
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT username, email FROM users WHERE id=?", (session['user_id'],))
+    user = cursor.fetchone()
+    conn.close()
+
+    return render_template('profile.html', user=user)
 
 @app.route('/change_password', methods=['GET', 'POST'])
 def change_password():
