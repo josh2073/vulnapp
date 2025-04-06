@@ -46,6 +46,6 @@ pip install flask
 # Run the application
 python3 app.py
 =======
-# cyber-allegiance-vulnerable-app
+# vulnapp
 A deliberately vulnerable web app built with Flask for security practice.
 >>>>>>> d974f2d2a4384f686bf203097956618577829230
