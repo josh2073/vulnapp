@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+<head><title>Your Gallery</title></head>
+<body>
+    <h2>Your Uploaded Images</h2>
+    {% for image in images %}
+        <img src="/static/uploads/{{ image['filename'] }}" width="200"><br><br>
+    {% endfor %}
+    <p><a href="/profile">Back to Profile</a></p>
+</body>
+</html>
